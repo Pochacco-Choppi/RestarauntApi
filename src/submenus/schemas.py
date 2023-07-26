@@ -1,6 +1,6 @@
 from typing import Optional
 
-from pydantic import BaseModel
+from pydantic import BaseModel, UUID4
 
 from src.dishes.models import Dish
 
@@ -9,8 +9,8 @@ class SubmenuBase(BaseModel):
     description: str
 
 class Submenu(SubmenuBase):
-    id: str
-    menu_id: str
+    id: UUID4
+    menu_id: UUID4
     dishes: list[Dish] = []
 
     class Config:
