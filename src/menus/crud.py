@@ -1,10 +1,11 @@
 from sqlalchemy.orm import Session
+from pydantic import UUID4
 
 from src.menus.models import Menu
 from src.menus.schemas import MenuCreate, MenuUpdate
 from src.dependencies import get_db
 
-def get_menu(db: Session, menu_id: str):
+def get_menu(db: Session, menu_id: UUID4):
     db_menu = db.query(Menu).filter(Menu.id == menu_id).first()
     return db_menu
 
@@ -19,7 +20,7 @@ def create_menu(db: Session, menu: MenuCreate):
     db.refresh(db_menu)
     return db_menu
 
-def update_menu(db: Session, menu: MenuUpdate, menu_id: str):
+def update_menu(db: Session, menu: MenuUpdate, menu_id: UUID4):
     # menu = get_menu(db, menu_id)
     db_menu = db.query(Menu).filter(Menu.id == menu_id).first()
     menu_data = menu.dict(exclude_unset=True)
@@ -30,7 +31,7 @@ def update_menu(db: Session, menu: MenuUpdate, menu_id: str):
     db.refresh(db_menu)
     return db_menu
 
-def delete_menu(db: Session, menu_id: str):
+def delete_menu(db: Session, menu_id: UUID4):
     # menu = get_menu(db, menu_id)
     db_menu = db.query(Menu).filter(Menu.id == menu_id).first()
     db.delete(db_menu)
