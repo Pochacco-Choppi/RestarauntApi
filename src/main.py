@@ -6,9 +6,6 @@ from src.submenus.router import router as submenu_router
 from src.dishes.router import router as dish_router
 
 
-Base.metadata.create_all(bind=engine)
-
-
 def create_app():
     app = FastAPI()
 
