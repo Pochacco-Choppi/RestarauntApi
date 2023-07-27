@@ -6,9 +6,14 @@ If you have Docker Compose installed, you can run RestarauntAPI using the provid
 2. Install Docker and Docker Compose if you haven't already.
 3. Build Docker Compose containers using `docker-compose build`
 4. Start the RestarauntAPI service using Docker Compose: `docker-compose up -d`
-5. Access RestarauntAPI in your web browser at http://127.0.0.1:8000.
+5. Access RestarauntAPI in your web browser at http://127.0.0.1:8000/docs.
 
 To stop RestarauntAPI, run `docker-compose down`. This will stop and remove the containers created by Docker Compose.
+
+# Applying migrations
+1. Go inside RestarauntAPI container using 
+`docker exec -it RESTARAUNT_API_CONTAINER_ID sh` command.
+2. Apply migrations using `alembic upgrade head` command.
 
 # Postman tests result
 
