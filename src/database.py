@@ -1,8 +1,8 @@
 import os
 
-from sqlalchemy import create_engine
+from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import sessionmaker, DeclarativeBase
 
 db_user = os.environ["DATABASE_USER"]
 db_password = os.environ["DATABASE_PASSWORD"]
@@ -17,4 +17,7 @@ engine = create_engine(
 )
 SessionLocal = sessionmaker(autocommit=False, autoflush=False, bind=engine)
 
-Base = declarative_base()
+my_metadata = MetaData()
+    
+class Base(DeclarativeBase):
+    metadata = my_metadata
