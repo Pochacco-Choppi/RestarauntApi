@@ -20,9 +20,8 @@ class Dish(DishBase):
 class DishCreate(DishBase):
     ...
 
-class DishResponse(DishBase):
+class DishCreateResponse(DishBase):
     id: UUID4
-    price: DECIMAL_TYPE
 
 class DishUpdate(BaseModel):
     title: Optional[str] = None

@@ -20,6 +20,9 @@ class Menu(MenuBase):
 class MenuCreate(MenuBase):
     ...
 
+class MenuCreateResponse(MenuBase):
+    id: UUID4
+
 class MenuUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None
