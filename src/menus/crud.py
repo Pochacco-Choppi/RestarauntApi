@@ -50,7 +50,7 @@ async def update_menu(session: AsyncSession, menu: MenuUpdate, menu_id: UUID4):
     stmt = select(Menu).where(Menu.id == menu_id)
     result = await session.execute(stmt)
     db_menu = result.scalar_one_or_none()
-    menu_data = menu.dict(exclude_unset=True)
+    menu_data = menu.model_dump(exclude_unset=True)
     for key, value in menu_data.items():
         setattr(db_menu, key, value)
     session.add(db_menu)

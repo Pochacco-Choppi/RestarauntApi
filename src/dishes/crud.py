@@ -19,7 +19,7 @@ async def list_submenu_dish(submenu_id: UUID4, session: AsyncSession, skip: int 
 
 async def update_dish(session: AsyncSession, dish: DishUpdate, dish_id: UUID4):
     db_dish = await get_dish(session, dish_id)
-    dish_data = dish.dict(exclude_unset=True)
+    dish_data = dish.model_dump(exclude_unset=True)
     for key, value in dish_data.items():
         setattr(db_dish, key, value)
     session.add(db_dish)
@@ -33,7 +33,7 @@ async def delete_dish(session: AsyncSession, dish_id: UUID4):
     await session.commit()
 
 async def create_submenu_dish(session: AsyncSession, dish: DishCreate, submenu_id: UUID4):
-    db_dish = Dish(**dish.dict(), submenu_id=submenu_id)
+    db_dish = Dish(**dish.model_dump(), submenu_id=submenu_id)
     session.add(db_dish)
     await session.commit()
     await session.refresh(db_dish)

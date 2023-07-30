@@ -22,12 +22,12 @@ async def get_submenu(session: AsyncSession, submenu_id: UUID4):
 
 
 async def list_menu_submenu(menu_id: UUID4, session: AsyncSession, skip: int = 0, limit: int = 100):
-    stmt = select(Submenu).offset(skip).limit(limit)
+    stmt = select(Submenu).where(Submenu.menu_id == menu_id).offset(skip).limit(limit)
     result = await session.execute(stmt)
     return result.scalars().all()
 
 async def create_menu_submenu(session: AsyncSession, submenu: SubmenuCreate, menu_id: UUID4):
-    db_submenu = Submenu(**submenu.dict(), menu_id=menu_id)
+    db_submenu = Submenu(**submenu.model_dump(), menu_id=menu_id)
     session.add(db_submenu)
     await session.commit()
     await session.refresh(db_submenu)
@@ -37,7 +37,7 @@ async def update_submenu(session: AsyncSession, submenu: SubmenuUpdate, submenu_
     stmt = select(Submenu).where(Submenu.id == submenu_id)
     result = await session.execute(stmt)
     db_submenu = result.scalar_one_or_none()
-    submenu_data = submenu.dict(exclude_unset=True)
+    submenu_data = submenu.model_dump(exclude_unset=True)
     for key, value in submenu_data.items():
         setattr(db_submenu, key, value)
     session.add(db_submenu)

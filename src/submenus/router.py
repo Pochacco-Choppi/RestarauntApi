@@ -29,6 +29,7 @@ async def list_menu_submenu(
     tags=["Submenus"],
 )
 async def get_submenu(
+    menu_id: UUID4,
     submenu_id: UUID4, 
     response: Response, 
     session: AsyncSession=Depends(get_session)
@@ -62,6 +63,7 @@ async def post_menu_submenu(
     tags=["Submenus"],
 )
 async def patch_submenu(
+    menu_id: UUID4,
     submenu_id: UUID4, 
     submenu: schemas.SubmenuUpdate, 
     session: AsyncSession=Depends(get_session),
@@ -76,6 +78,7 @@ async def patch_submenu(
     tags=["Submenus"],
 )
 async def delete_submenu(
+    menu_id: UUID4,
     submenu_id: UUID4, 
     session: AsyncSession=Depends(get_session),
 ) -> JSONResponse:

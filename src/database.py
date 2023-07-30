@@ -27,7 +27,8 @@ class DatabaseSessionManager:
     def init(self, SQLALCHEMY_DATABASE_URL: str):
         self._engine = create_async_engine(
             SQLALCHEMY_DATABASE_URL,
-            echo=True,
+            echo=True, 
+            future=True,
             )
         self._sessionmaker = async_sessionmaker(autocommit=False, bind=self._engine, expire_on_commit=False)
 
