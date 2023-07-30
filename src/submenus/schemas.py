@@ -20,6 +20,9 @@ class Submenu(SubmenuBase):
 class SubmenuCreate(SubmenuBase):
     ...
 
+class SubmenuCreateResponse(SubmenuBase):
+    id: UUID4
+
 class SubmenuUpdate(BaseModel):
     title: Optional[str] = None
     description: Optional[str] = None

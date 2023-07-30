@@ -1,5 +1,5 @@
-from sqlalchemy import Column, ForeignKey, String, UUID
-from sqlalchemy.orm import relationship
+from sqlalchemy import ForeignKey, String, UUID
+from sqlalchemy.orm import relationship, mapped_column, Mapped
 
 import uuid
 
@@ -8,10 +8,10 @@ from src.database import Base
 class Submenu(Base):
     __tablename__ = "submenus"
 
-    id = Column(UUID, primary_key=True, default=uuid.uuid4, index=True)
-    title = Column(String)
-    description = Column(String)
-    menu_id = Column(UUID, ForeignKey("menus.id", ondelete="CASCADE"))
+    id: Mapped[uuid.UUID] = mapped_column(primary_key=True, default=uuid.uuid4, index=True)
+    title: Mapped[str] = mapped_column(String)
+    description: Mapped[str] = mapped_column(String)
+    menu_id: Mapped[uuid] = mapped_column(ForeignKey("menus.id", ondelete="CASCADE"))
 
-    menu = relationship("Menu", back_populates="submenus")
-    dishes = relationship("Dish", back_populates="submenu", cascade="all, delete-orphan")
+    menu: Mapped["Menu"] = relationship("Menu", back_populates="submenus")
+    dishes: Mapped[list["Dish"]] = relationship("Dish", back_populates="submenu", cascade="all, delete-orphan")
