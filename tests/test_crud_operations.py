@@ -18,14 +18,14 @@ def event_loop(request):
 @pytest_asyncio.fixture
 async def client() -> AsyncClient:
     sessionmanager = DatabaseSessionManager()
-    sessionmanager.init(SQLALCHEMY_DATABASE_URL)
+    sessionmanager.init(SQLALCHEMY_DATABASE_URL + "/postgres_test")
     
     engine = sessionmanager._engine
 
     async with engine.begin() as conn:
         await sessionmanager.create_all(conn)
 
-    async with AsyncClient(app=app, base_url="http://127.0.0.1:8000") as c:
+    async with AsyncClient(app=app, base_url="http://127.0.0.1:5000") as c:
         yield c
 
 
