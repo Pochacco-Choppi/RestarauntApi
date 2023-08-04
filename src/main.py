@@ -6,7 +6,7 @@ from src.submenus.router import router as submenu_router
 from src.dishes.router import router as dish_router
 
 
-def create_app():
+def create_app() -> FastAPI:
     app = FastAPI()
 
     app.include_router(menu_router)

@@ -5,10 +5,12 @@ from pydantic import BaseModel, UUID4, Field, condecimal
 
 DECIMAL_TYPE = condecimal(ge=0.009, decimal_places=2)
 
+
 class DishBase(BaseModel):
     title: str
     description: str
     price: DECIMAL_TYPE
+
 
 class Dish(DishBase):
     id: UUID4
@@ -17,11 +19,14 @@ class Dish(DishBase):
     class Config:
         from_attributes = True
 
+
 class DishCreate(DishBase):
     ...
 
+
 class DishCreateResponse(DishBase):
     id: UUID4
+
 
 class DishUpdate(BaseModel):
     title: Optional[str] = None

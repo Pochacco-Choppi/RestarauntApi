@@ -5,19 +5,29 @@ from typing import AsyncIterator
 from sqlalchemy import create_engine, MetaData
 from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker, DeclarativeBase
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncEngine, AsyncConnection, AsyncSession
+from sqlalchemy.ext.asyncio import (
+    create_async_engine,
+    async_sessionmaker,
+    AsyncEngine,
+    AsyncConnection,
+    AsyncSession,
+)
 
 db_user = os.environ["DATABASE_USER"]
 db_password = os.environ["DATABASE_PASSWORD"]
 db_host = os.environ["DATABASE_HOST"]
 db_port = os.environ["DATABASE_PORT"]
 
-SQLALCHEMY_DATABASE_URL = f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}"
+SQLALCHEMY_DATABASE_URL = (
+    f"postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}"
+)
 
 async_session = async_sessionmaker(autoflush=False, expire_on_commit=False)
 
+
 class Base(DeclarativeBase):
     metadata = MetaData()
+
 
 class DatabaseSessionManager:
     def __init__(self):
@@ -27,10 +37,12 @@ class DatabaseSessionManager:
     def init(self, SQLALCHEMY_DATABASE_URL: str):
         self._engine = create_async_engine(
             SQLALCHEMY_DATABASE_URL,
-            echo=True, 
+            echo=True,
             future=True,
-            )
-        self._sessionmaker = async_sessionmaker(autocommit=False, bind=self._engine, expire_on_commit=False)
+        )
+        self._sessionmaker = async_sessionmaker(
+            autocommit=False, bind=self._engine, expire_on_commit=False
+        )
 
     async def close(self):
         if self._engine is None:
@@ -71,6 +83,7 @@ class DatabaseSessionManager:
 
     async def drop_all(self, connection: AsyncConnection):
         await connection.run_sync(Base.metadata.drop_all)
+
 
 session_manager = DatabaseSessionManager()
 session_manager.init(SQLALCHEMY_DATABASE_URL)
