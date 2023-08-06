@@ -1,14 +1,13 @@
-from typing import Optional
-from decimal import Decimal
-
-from pydantic import BaseModel, UUID4, Field, condecimal
+from pydantic import UUID4, BaseModel, condecimal
 
 DECIMAL_TYPE = condecimal(ge=0.009, decimal_places=2)
+
 
 class DishBase(BaseModel):
     title: str
     description: str
-    price: DECIMAL_TYPE
+    price: DECIMAL_TYPE  # type: ignore
+
 
 class Dish(DishBase):
     id: UUID4
@@ -17,13 +16,16 @@ class Dish(DishBase):
     class Config:
         from_attributes = True
 
+
 class DishCreate(DishBase):
     ...
+
 
 class DishCreateResponse(DishBase):
     id: UUID4
 
+
 class DishUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
-    price: Optional[DECIMAL_TYPE] = None
+    title: str | None = None
+    description: str | None = None
+    price: DECIMAL_TYPE | None = None  # type: ignore
