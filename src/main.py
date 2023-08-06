@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 
-from src.database import Base
+from src.dishes.router import router as dish_router
 from src.menus.router import router as menu_router
 from src.submenus.router import router as submenu_router
-from src.dishes.router import router as dish_router
 
 
 def create_app() -> FastAPI:

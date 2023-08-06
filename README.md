@@ -11,13 +11,13 @@ If you have Docker Compose installed, you can run RestarauntAPI using the provid
 To stop RestarauntAPI, run `docker-compose down`. This will stop and remove the containers created by Docker Compose.
 
 # Applying migrations
-1. Go inside RestarauntAPI container using 
+1. Go inside RestarauntAPI container using
 `docker exec -it RESTARAUNT_API_CONTAINER_ID sh` command.
 2. Apply migrations using `alembic upgrade head` command.
 
 # Creating Docker Compose test containers
 1. Build Docker Compose test containers using `docker-compose -f docker-compose_test.yml up`
-2. Go inside RestarauntAPI test container using 
+2. Go inside RestarauntAPI test container using
 `docker exec -it RESTARAUNT_API_TEST_CONTAINER_ID sh` command.
 3. Runing test using `pytest` command.
 

@@ -17,7 +17,8 @@ services:
       DATABASE_PASSWORD: postgres
       DATABASE_HOST: db
       DATABASE_PORT: 5432
-    command: sh -c "alembic upgrade head 
+      REDIS_HOST: redis
+    command: sh -c "alembic upgrade head
       && uvicorn src.main:app --host 0.0.0.0 --port 8000 --reload"
 
   db:
@@ -27,3 +28,8 @@ services:
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: postgres
+
+  redis_test:
+    image: redis
+    ports:
+      - 6379:6379

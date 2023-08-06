@@ -1,6 +1,4 @@
-from typing import Optional
-
-from pydantic import BaseModel, UUID4
+from pydantic import UUID4, BaseModel
 
 from src.submenus.models import Submenu
 
@@ -28,5 +26,5 @@ class MenuCreateResponse(MenuBase):
 
 
 class MenuUpdate(BaseModel):
-    title: Optional[str] = None
-    description: Optional[str] = None
+    title: str | None = None
+    description: str | None = None

@@ -1,84 +1,78 @@
-from fastapi import Depends, APIRouter, status, Response, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import UUID4
-from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.menus import crud, schemas
-from src.dependencies import get_session
-from src.database import Base
+from src.menus import schemas
+from src.menus.services import MenuService
 
-router = APIRouter(prefix="/api/v1/menus")
+router = APIRouter(prefix='/api/v1/menus')
 
 
 @router.get(
-    path="/",
+    path='/',
     status_code=status.HTTP_200_OK,
-    tags=["Menus"],
+    tags=['Menus'],
 )
-async def list_menu(session: AsyncSession = Depends(get_session)) -> JSONResponse:
-    menus = await crud.list_menu(session)
+async def list_menu(menu: MenuService = Depends()) -> JSONResponse:
+    menus_list = await menu.list()
     return jsonable_encoder(
-        [schemas.MenuBase(title=m.title, description=m.description) for m in menus]
+        [schemas.MenuBase(title=m.title, description=m.description) for m in menus_list]
     )
 
 
 @router.get(
-    path="/{id}",
+    path='/{id}',
     status_code=status.HTTP_200_OK,
-    tags=["Menus"],
+    tags=['Menus'],
 )
 async def get_menu(
     id: UUID4,
     response: Response,
-    session: AsyncSession = Depends(get_session),
+    menu: MenuService = Depends(),
 ) -> JSONResponse:
-    menu = await crud.get_menu(session, id)
+    menu_entity = await menu.get(id)
 
-    if not menu:
+    if not menu_entity:
         response.status_code = status.HTTP_404_NOT_FOUND
         return HTTPException(
-            status_code=status.HTTP_404_NOT_FOUND, detail="menu not found"
+            status_code=status.HTTP_404_NOT_FOUND, detail='menu not found'
         )
-    return jsonable_encoder(menu)
+    return jsonable_encoder(menu_entity)
 
 
 @router.post(
-    path="/",
+    path='/',
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.MenuCreateResponse,
-    tags=["Menus"],
+    tags=['Menus'],
 )
-async def post_menu(
-    menu: schemas.MenuCreate,
-    session: AsyncSession = Depends(get_session),
+async def create_menu(
+    menu_data: schemas.MenuCreate,
+    menu: MenuService = Depends(),
 ) -> JSONResponse:
-    menu = await crud.create_menu(session, menu)
-    return jsonable_encoder(menu)
+    menu_entity = await menu.create(menu_data)
+    return jsonable_encoder(menu_entity)
 
 
 @router.patch(
-    path="/{id}",
+    path='/{id}',
     status_code=status.HTTP_200_OK,
-    tags=["Menus"],
+    tags=['Menus'],
 )
 async def patch_menu(
     id: UUID4,
-    menu: schemas.MenuUpdate,
-    session: AsyncSession = Depends(get_session),
+    menu_data: schemas.MenuUpdate,
+    menu: MenuService = Depends(),
 ) -> JSONResponse:
-    menu = await crud.update_menu(session, menu, id)
-    return jsonable_encoder(menu)
+    menu_entity = await menu.update(menu_data, id)
+    return jsonable_encoder(menu_entity)
 
 
 @router.delete(
-    path="/{id}",
+    path='/{id}',
     status_code=status.HTTP_200_OK,
-    tags=["Menus"],
+    tags=['Menus'],
 )
-async def delete_menu(
-    id: UUID4,
-    session: AsyncSession = Depends(get_session),
-) -> JSONResponse:
-    await crud.delete_menu(session, id)
+async def delete_menu(id: UUID4, menu: MenuService = Depends()) -> JSONResponse:
+    await menu.delete(id)
