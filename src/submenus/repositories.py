@@ -1,16 +1,13 @@
 from fastapi import Depends
-
-from sqlalchemy import select, func
-from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import UUID4
+from sqlalchemy import func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.base.repositories import BaseRedisCacheRepository
+from src.dependencies import get_session
 from src.dishes.models import Dish
 from src.submenus.models import Submenu
 from src.submenus.schemas import SubmenuCreate, SubmenuUpdate
-from src.dependencies import get_session
-from src.database import redis
-from src.base.repositories import BaseRedisCacheRepository
 
 
 class SubmenuRepository:
@@ -25,7 +22,7 @@ class SubmenuRepository:
             self.model.description,
             select(func.count(Dish.id))
             .where(Dish.submenu_id == submenu_id)
-            .label("dishes_count"),
+            .label('dishes_count'),
         ).where(self.model.id == submenu_id)
         result = await self.session.execute(stmt)
 
@@ -66,6 +63,7 @@ class SubmenuRepository:
         db_submenu = result.scalar_one_or_none()
         await self.session.delete(db_submenu)
         await self.session.commit()
+
 
 class SubmenuCacheRepository(BaseRedisCacheRepository):
     ...

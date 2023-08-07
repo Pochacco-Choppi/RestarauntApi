@@ -1,18 +1,14 @@
 from fastapi import Depends
-
-import os
-
-from sqlalchemy import select, func, and_
-from sqlalchemy.orm import Session
-from sqlalchemy.ext.asyncio import AsyncSession
 from pydantic import UUID4
+from sqlalchemy import and_, func, select
+from sqlalchemy.ext.asyncio import AsyncSession
 
-from src.submenus.models import Submenu
+from src.base.repositories import BaseRedisCacheRepository
+from src.dependencies import get_session
 from src.dishes.models import Dish
 from src.menus.models import Menu
 from src.menus.schemas import MenuCreate, MenuUpdate
-from src.dependencies import get_session
-from src.base.repositories import BaseRedisCacheRepository
+from src.submenus.models import Submenu
 
 
 class MenuRepository:
@@ -28,11 +24,11 @@ class MenuRepository:
                 self.model.description,
                 select(func.count(Submenu.id))
                 .where(Submenu.menu_id == menu_id)
-                .label("submenus_count"),
+                .label('submenus_count'),
                 select(func.count(Dish.id))
                 .join(Submenu)
                 .where(and_(Submenu.menu_id == menu_id, Submenu.id == Dish.submenu_id))
-                .label("dishes_count"),
+                .label('dishes_count'),
             )
             .where(self.model.id == menu_id)
             .select_from(self.model)
@@ -73,6 +69,7 @@ class MenuRepository:
         db_menu = result.scalar_one_or_none()
         await self.session.delete(db_menu)
         await self.session.commit()
+
 
 class MenuCacheRepository(BaseRedisCacheRepository):
     ...
