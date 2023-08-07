@@ -1,13 +1,12 @@
 from fastapi import Depends
-from sqlalchemy import select
-from sqlalchemy.orm import Session
 from pydantic import UUID4
+from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
 
+from src.base.repositories import BaseRedisCacheRepository
+from src.dependencies import get_session
 from src.dishes.models import Dish
 from src.dishes.schemas import DishCreate, DishUpdate
-from src.dependencies import get_session
-from src.base.repositories import BaseRedisCacheRepository
 
 
 class DishRepository:
@@ -51,6 +50,7 @@ class DishRepository:
         await self.session.commit()
         await self.session.refresh(db_dish)
         return db_dish
+
 
 class DishCacheRepository(BaseRedisCacheRepository):
     ...
