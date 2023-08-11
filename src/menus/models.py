@@ -16,5 +16,8 @@ class Menu(Base):
     description: Mapped[str] = mapped_column(String)
 
     submenus: Mapped[list['Submenu']] = relationship(
-        'Submenu', back_populates='menu', cascade='all, delete-orphan'
+        'Submenu',
+        back_populates='menu', 
+        cascade='all, delete-orphan', 
+        # lazy='joined',
     )

@@ -1,8 +1,8 @@
 import asyncio
-from fastapi import FastAPI
 
 import pytest
 import pytest_asyncio
+from fastapi import FastAPI
 from httpx import AsyncClient
 
 from src.database import SQLALCHEMY_DATABASE_URL, AsyncEngine, DatabaseSessionManager

@@ -1,6 +1,7 @@
 from pydantic import UUID4, BaseModel
 
 from src.dishes.models import Dish
+from src.dishes import schemas as dish_schemas
 
 
 class SubmenuBase(BaseModel):
@@ -11,7 +12,7 @@ class SubmenuBase(BaseModel):
 class Submenu(SubmenuBase):
     id: UUID4
     menu_id: UUID4
-    dishes: list[Dish] = []
+    dishes: list[dish_schemas.Dish] = []
 
     class Config:
         from_attributes = True

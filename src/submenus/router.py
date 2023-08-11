@@ -6,15 +6,17 @@ from pydantic import UUID4
 from src.submenus import schemas
 from src.submenus.services import SubmenuService
 
-router = APIRouter(prefix='/api/v1/menus')
+router = APIRouter(
+    prefix='/api/v1/menus/{menu_id}/submenus',
+    tags=['Submenus'],
+)
 
 
 @router.get(
-    path='/{menu_id}/submenus',
+    path='',
     status_code=status.HTTP_200_OK,
-    tags=['Submenus'],
 )
-async def list_menu_submenu(
+async def list_submenu(
     menu_id: UUID4,
     submenu: SubmenuService = Depends(),
 ) -> JSONResponse:
@@ -23,9 +25,8 @@ async def list_menu_submenu(
 
 
 @router.get(
-    path='/{menu_id}/submenus/{submenu_id}',
+    path='/{submenu_id}',
     status_code=status.HTTP_200_OK,
-    tags=['Submenus'],
 )
 async def get_submenu(
     menu_id: UUID4,
@@ -33,7 +34,7 @@ async def get_submenu(
     response: Response,
     submenu: SubmenuService = Depends(),
 ) -> JSONResponse:
-    submenu_entity = await submenu.get(submenu_id)
+    submenu_entity = await submenu.get(submenu_id, menu_id)
 
     if not submenu_entity:
         response.status_code = status.HTTP_404_NOT_FOUND
@@ -44,12 +45,11 @@ async def get_submenu(
 
 
 @router.post(
-    path='/{menu_id}/submenus',
+    path='',
     status_code=status.HTTP_201_CREATED,
     response_model=schemas.SubmenuCreateResponse,
-    tags=['Submenus'],
 )
-async def post_menu_submenu(
+async def create_submenu(
     menu_id: UUID4,
     submenu_data: schemas.SubmenuCreate,
     submenu: SubmenuService = Depends(),
@@ -59,9 +59,8 @@ async def post_menu_submenu(
 
 
 @router.patch(
-    path='/{menu_id}/submenus/{submenu_id}',
+    path='/{submenu_id}',
     status_code=status.HTTP_200_OK,
-    tags=['Submenus'],
 )
 async def patch_submenu(
     menu_id: UUID4,
@@ -69,18 +68,17 @@ async def patch_submenu(
     submenu_data: schemas.SubmenuUpdate,
     submenu: SubmenuService = Depends(),
 ) -> JSONResponse:
-    submenu_entity = await submenu.update(submenu_data, submenu_id)
+    submenu_entity = await submenu.update(submenu_data, submenu_id, menu_id)
     return jsonable_encoder(submenu_entity)
 
 
 @router.delete(
-    path='/{menu_id}/submenus/{submenu_id}',
+    path='/{submenu_id}',
     status_code=status.HTTP_200_OK,
-    tags=['Submenus'],
 )
 async def delete_submenu(
     menu_id: UUID4,
     submenu_id: UUID4,
     submenu: SubmenuService = Depends(),
 ) -> JSONResponse:
-    await submenu.delete(submenu_id)
+    await submenu.delete(submenu_id, menu_id)
