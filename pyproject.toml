@@ -23,6 +23,11 @@ mypy = "^1.4.1"
 pre-commit = "^3.3.3"
 types-redis = "^4.6.0.3"
 redis = "^4.6.0"
+pandas = "^2.0.3"
+openpyxl = "^3.1.2"
+requests = "^2.31.0"
+celery = "^5.3.1"
+asgiref = "^3.7.2"
 
 [tool.pytest.ini_options]
 pythonpath = [

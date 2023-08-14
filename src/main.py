@@ -16,3 +16,7 @@ def create_app() -> FastAPI:
 
 
 app = create_app()
+
+
+def url_for(view_name: str, **kwargs) -> str:
+    return app.url_path_for(view_name, **kwargs)

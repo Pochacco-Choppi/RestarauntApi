@@ -1,3 +1,5 @@
+from typing import Any
+
 from fastapi import Depends
 from pydantic import UUID4
 from sqlalchemy import func, select
@@ -11,11 +13,17 @@ from src.submenus.schemas import SubmenuCreate, SubmenuUpdate
 
 
 class SubmenuRepository:
-    def __init__(self, session: AsyncSession = Depends(get_session)):
+    def __init__(self, session: AsyncSession = Depends(get_session)) -> None:
         self.session: AsyncSession = session
         self.model = Submenu
 
-    async def get(self, submenu_id: UUID4):
+    async def get_by_id(self, submenu_id: UUID4) -> Submenu | None:
+        stmt = select(Submenu).where(Submenu.id == submenu_id)
+        result = await self.session.execute(stmt)
+        db_submenu = result.scalar_one_or_none()
+        return db_submenu
+
+    async def get(self, submenu_id: UUID4) -> Any:
         stmt = select(
             self.model.id,
             self.model.title,
@@ -28,7 +36,7 @@ class SubmenuRepository:
 
         return result.mappings().one_or_none()
 
-    async def list(self, menu_id: UUID4, skip: int = 0, limit: int = 100):
+    async def list(self, menu_id: UUID4, skip: int = 0, limit: int = 100) -> list[Submenu]:
         stmt = (
             select(self.model)
             .where(self.model.menu_id == menu_id)
@@ -38,17 +46,15 @@ class SubmenuRepository:
         result = await self.session.execute(stmt)
         return result.scalars().all()
 
-    async def create(self, submenu: SubmenuCreate, menu_id: UUID4):
+    async def create(self, submenu: SubmenuCreate, menu_id: UUID4) -> Submenu:
         db_submenu = self.model(**submenu.model_dump(), menu_id=menu_id)
         self.session.add(db_submenu)
         await self.session.commit()
         await self.session.refresh(db_submenu)
         return db_submenu
 
-    async def update(self, submenu: SubmenuUpdate, submenu_id: UUID4):
-        stmt = select(Submenu).where(Submenu.id == submenu_id)
-        result = await self.session.execute(stmt)
-        db_submenu = result.scalar_one_or_none()
+    async def update(self, submenu: SubmenuUpdate, submenu_id: UUID4) -> Submenu | None:
+        db_submenu = await self.get_by_id(submenu_id)
         submenu_data = submenu.model_dump(exclude_unset=True)
         for key, value in submenu_data.items():
             setattr(db_submenu, key, value)
@@ -57,10 +63,8 @@ class SubmenuRepository:
         await self.session.refresh(db_submenu)
         return db_submenu
 
-    async def delete(self, submenu_id: UUID4):
-        stmt = select(Submenu).where(Submenu.id == submenu_id)
-        result = await self.session.execute(stmt)
-        db_submenu = result.scalar_one_or_none()
+    async def delete(self, submenu_id: UUID4) -> None:
+        db_submenu = await self.get_by_id(submenu_id)
         await self.session.delete(db_submenu)
         await self.session.commit()
 
