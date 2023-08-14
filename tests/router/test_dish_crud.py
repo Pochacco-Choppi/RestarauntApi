@@ -57,7 +57,7 @@ async def test_list_dishes_is_empty(client):
 
     response = await client.get(
         url_for('create_dish', menu_id=target_menu_id, submenu_id=target_submenu_id),
-        )
+    )
     assert response.status_code == 200
     assert response.json() == []
 
@@ -116,6 +116,24 @@ async def test_patch_dish(client):
 
 
 @pytest.mark.asyncio
+async def test_get_related(client):
+    response = await client.get(
+        url_for('list_menu_with_related'),
+    )
+    assert response.status_code == 200
+
+    assert response.json()[0]['title'] == menu_data_json['title']
+    assert response.json()[0]['description'] == menu_data_json['description']
+    assert response.json()[0]['submenus'] != []
+    assert response.json()[0]['submenus'][0]['title'] == submenu_data_json['title']
+    assert response.json()[0]['submenus'][0]['description'] == submenu_data_json['description']
+    assert response.json()[0]['submenus'][0]['dishes'] != []
+    assert response.json()[0]['submenus'][0]['dishes'][0]['title'] == patch_dish_data_json['title']
+    assert response.json()[0]['submenus'][0]['dishes'][0]['description'] == patch_dish_data_json['description']
+    assert response.json()[0]['submenus'][0]['dishes'][0]['price'] == patch_dish_data_json['price']
+
+
+@pytest.mark.asyncio
 async def test_delete_dish(client):
     response = await client.delete(
         url_for('delete_dish', menu_id=target_menu_id, submenu_id=target_submenu_id, dish_id=target_dish_id),
@@ -128,8 +146,8 @@ async def test_delete_dish(client):
 @pytest.mark.asyncio
 async def test_get_dish_not_found(client):
     response = await client.get(
-                url_for('get_dish', menu_id=target_menu_id, submenu_id=target_submenu_id, dish_id=target_dish_id),
-            )
+        url_for('get_dish', menu_id=target_menu_id, submenu_id=target_submenu_id, dish_id=target_dish_id),
+    )
 
     assert response.status_code == 404
 

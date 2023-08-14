@@ -1,6 +1,5 @@
 from pydantic import UUID4, BaseModel
 
-from src.dishes.models import Dish
 from src.dishes import schemas as dish_schemas
 
 

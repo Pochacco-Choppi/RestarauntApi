@@ -51,12 +51,16 @@ class MenuService:
 
         return menu_entity
 
-    async def delete(self, menu_id: UUID4) -> Any:
+    async def clear_cache(self, menu_id: UUID4):
         key = self.generate_cache_key(menu_id)
-
         await self.menu_cache_repository.delete(key)
 
         if related_cache_keys := await self.menu_cache_repository.keys(f'*{menu_id}*'.encode()):
             await self.menu_cache_repository.delete(*related_cache_keys)
 
+    async def delete(self, menu_id: UUID4) -> Any:
+
         return await self.menu_repository.delete(menu_id)
+
+    async def bulk_create(self, menus):
+        return await self.menu_repository.bulk_create(menus)

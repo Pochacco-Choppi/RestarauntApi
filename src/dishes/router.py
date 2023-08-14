@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import UUID4
@@ -82,9 +82,11 @@ async def patch_dish(
     status_code=status.HTTP_200_OK,
 )
 async def delete_dish(
+    background_tasks: BackgroundTasks,
     dish_id: UUID4,
     menu_id: UUID4,
     submenu_id: UUID4,
     dish: DishService = Depends(),
 ) -> JSONResponse:
+    background_tasks.add_task(dish.clear_cache, dish_id, menu_id, submenu_id)
     await dish.delete(dish_id, menu_id, submenu_id)

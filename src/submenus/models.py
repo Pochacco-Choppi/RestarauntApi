@@ -18,8 +18,8 @@ class Submenu(Base):
 
     menu: Mapped['Menu'] = relationship('Menu', back_populates='submenus')
     dishes: Mapped[list['Dish']] = relationship(
-        'Dish', 
-        back_populates='submenu', 
-        cascade='all, delete-orphan', 
+        'Dish',
+        back_populates='submenu',
+        cascade='all, delete-orphan',
         # lazy='joined',
     )

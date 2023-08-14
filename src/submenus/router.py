@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import UUID4
@@ -77,8 +77,10 @@ async def patch_submenu(
     status_code=status.HTTP_200_OK,
 )
 async def delete_submenu(
+    background_tasks: BackgroundTasks,
     menu_id: UUID4,
     submenu_id: UUID4,
     submenu: SubmenuService = Depends(),
 ) -> JSONResponse:
+    background_tasks.add_task(submenu.clear_cache, submenu_id, menu_id)
     await submenu.delete(submenu_id, menu_id)

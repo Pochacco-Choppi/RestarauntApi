@@ -1,4 +1,4 @@
-from fastapi import APIRouter, Depends, HTTPException, Response, status
+from fastapi import APIRouter, BackgroundTasks, Depends, HTTPException, Response, status
 from fastapi.encoders import jsonable_encoder
 from fastapi.responses import JSONResponse
 from pydantic import UUID4
@@ -20,12 +20,13 @@ async def list_menu_with_related(menu: MenuService = Depends()) -> JSONResponse:
     menus_list = await menu.list_related()
     return jsonable_encoder(
         [schemas.Menu(
-            id=m.id, 
-            title=m.title, 
-            description=m.description, 
+            id=m.id,
+            title=m.title,
+            description=m.description,
             submenus=m.submenus,
-            ) for m in menus_list]
+        ) for m in menus_list]
     )
+
 
 @router.get(
     path='/',
@@ -35,11 +36,11 @@ async def list_menu(menu: MenuService = Depends()) -> JSONResponse:
     menus_list = await menu.list_related()
     return jsonable_encoder(
         [schemas.MenuBase(
-            # id=m.id, 
-            title=m.title, 
-            description=m.description, 
+            # id=m.id,
+            title=m.title,
+            description=m.description,
             # submenus=m.submenus,
-            ) for m in menus_list]
+        ) for m in menus_list]
     )
 
 
@@ -92,5 +93,10 @@ async def patch_menu(
     path='/{menu_id}',
     status_code=status.HTTP_200_OK,
 )
-async def delete_menu(menu_id: UUID4, menu: MenuService = Depends()) -> JSONResponse:
+async def delete_menu(
+    background_tasks: BackgroundTasks,
+    menu_id: UUID4,
+    menu: MenuService = Depends(),
+) -> JSONResponse:
+    background_tasks.add_task(menu.clear_cache, menu_id)
     await menu.delete(menu_id)

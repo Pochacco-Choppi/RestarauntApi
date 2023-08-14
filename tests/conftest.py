@@ -25,6 +25,7 @@ async def client() -> AsyncClient:
     engine: AsyncEngine = sessionmanager._engine
 
     async with engine.begin() as conn:
+        await sessionmanager.drop_all(conn)
         await sessionmanager.create_all(conn)
 
     async with AsyncClient(app=app, base_url='http://127.0.0.1:5000') as c:

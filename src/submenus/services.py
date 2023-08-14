@@ -51,7 +51,7 @@ class SubmenuService:
 
         return submenu_entity
 
-    async def delete(self, submenu_id: UUID4, menu_id: UUID4) -> Any:
+    async def clear_cache(self, submenu_id: UUID4, menu_id: UUID4):
         key = self.generate_cache_key(menu_id, submenu_id)
 
         await self.submenu_cache_repository.delete(key)
@@ -59,4 +59,5 @@ class SubmenuService:
         if menus_cache_keys := await self.submenu_cache_repository.keys(f'*{menu_id}*'.encode()):
             await self.submenu_cache_repository.delete(*menus_cache_keys)
 
+    async def delete(self, submenu_id: UUID4, menu_id: UUID4) -> Any:
         return await self.submenu_repository.delete(submenu_id)

@@ -118,7 +118,7 @@ async def test_list_submenu_is_empty_after_delete(client):
 @pytest.mark.asyncio
 async def test_get_submenu_not_found(client):
     response = await client.get(
-        url_for('get_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),    
+        url_for('get_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
     )
 
     assert response.status_code == 404

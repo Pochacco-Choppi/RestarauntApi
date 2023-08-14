@@ -55,7 +55,7 @@ class DishService:
 
         return dish_entity
 
-    async def delete(self, dish_id: UUID4, menu_id: UUID4, submenu_id: UUID4) -> Any:
+    async def clear_cache(self, dish_id: UUID4, menu_id: UUID4, submenu_id: UUID4):
         key = self.generate_cache_key(menu_id, submenu_id, dish_id)
 
         await self.dish_cache_repository.delete(key)
@@ -65,5 +65,7 @@ class DishService:
 
         if submenus_cache_keys := await self.dish_cache_repository.keys(f'*{submenu_id}*'.encode()):
             await self.dish_cache_repository.delete(*submenus_cache_keys)
+
+    async def delete(self, dish_id: UUID4, menu_id: UUID4, submenu_id: UUID4) -> Any:
 
         return await self.dish_repository.delete(dish_id)

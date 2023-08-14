@@ -55,7 +55,7 @@ async def test_get_menu(client):
 @pytest.mark.asyncio
 async def test_patch_menu(client):
     response = await client.patch(
-        url_for('patch_menu', menu_id=target_menu_id), 
+        url_for('patch_menu', menu_id=target_menu_id),
         json=menu_patch_data_json,
     )
 
