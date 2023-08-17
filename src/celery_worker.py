@@ -84,7 +84,7 @@ async def bulk_create() -> None:
 
 
 @celery.task
-def test():
+def test() -> None:
     try:
         loop = asyncio.new_event_loop()
         loop.run_until_complete(bulk_create())
