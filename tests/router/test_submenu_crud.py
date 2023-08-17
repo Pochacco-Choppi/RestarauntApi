@@ -1,20 +1,8 @@
 import pytest
+from httpx import AsyncClient
 
 from src.main import url_for
-
-menu_data_json = {'title': 'My menu 1', 'description': 'My menu description 1'}
-
-submenu_data_json = {'title': 'My submenu 1', 'description': 'My submenu description 1'}
-
-submenu_patch_data_json = {
-    'title': 'My updated submenu 1',
-    'description': 'My updated submenu description 1',
-}
-
-menu_patch_data_json = {
-    'title': 'My updated menu 1',
-    'description': 'My updated menu description 1',
-}
+from tests.data import MENU_DATA_JSON, SUBMENU_DATA_JSON, SUBMENU_PATCH_DATA_JSON
 
 global target_menu_id
 target_menu_id = None
@@ -24,9 +12,9 @@ target_submenu_id = None
 
 
 @pytest.mark.asyncio
-async def test_list_submenu_is_empty(client):
+async def test_list_submenu_is_empty(client: AsyncClient) -> None:
     # Create Menu
-    response = await client.post(url_for('create_menu'), json=menu_data_json)
+    response = await client.post(url_for('create_menu'), json=MENU_DATA_JSON)
 
     global target_menu_id
     target_menu_id = response.json()['id']
@@ -39,14 +27,14 @@ async def test_list_submenu_is_empty(client):
 
 
 @pytest.mark.asyncio
-async def test_create_submenu(client):
+async def test_create_submenu(client: AsyncClient) -> None:
     response = await client.post(
-        url_for('create_submenu', menu_id=target_menu_id), json=submenu_data_json
+        url_for('create_submenu', menu_id=target_menu_id), json=SUBMENU_DATA_JSON
     )
 
     assert response.status_code == 201, response.text
-    assert response.json()['title'] == submenu_data_json['title']
-    assert response.json()['description'] == submenu_data_json['description']
+    assert response.json()['title'] == SUBMENU_DATA_JSON['title']
+    assert response.json()['description'] == SUBMENU_DATA_JSON['description']
     assert 'id' in response.json()
     global target_submenu_id
 
@@ -54,7 +42,7 @@ async def test_create_submenu(client):
 
 
 @pytest.mark.asyncio
-async def test_list_submenu_is_not_empty(client):
+async def test_list_submenu_is_not_empty(client: AsyncClient) -> None:
     response = await client.get(url_for('list_submenu', menu_id=target_menu_id))
 
     assert response.status_code == 200
@@ -62,41 +50,41 @@ async def test_list_submenu_is_not_empty(client):
 
 
 @pytest.mark.asyncio
-async def test_get_submenu(client):
+async def test_get_submenu(client: AsyncClient) -> None:
     response = await client.get(
         url_for('get_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
     )
 
     assert response.status_code == 200
-    assert response.json()['title'] == submenu_data_json['title']
-    assert response.json()['description'] == submenu_data_json['description']
+    assert response.json()['title'] == SUBMENU_DATA_JSON['title']
+    assert response.json()['description'] == SUBMENU_DATA_JSON['description']
 
 
 @pytest.mark.asyncio
-async def test_patch_submenu(client):
+async def test_patch_submenu(client: AsyncClient) -> None:
     response = await client.patch(
         url_for('patch_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
-        json=submenu_patch_data_json,
+        json=SUBMENU_PATCH_DATA_JSON,
     )
 
     assert response.status_code == 200, response.text
-    assert response.json()['title'] == submenu_patch_data_json['title']
-    assert response.json()['description'] == submenu_patch_data_json['description']
+    assert response.json()['title'] == SUBMENU_PATCH_DATA_JSON['title']
+    assert response.json()['description'] == SUBMENU_PATCH_DATA_JSON['description']
 
 
 @pytest.mark.asyncio
-async def test_get_submenu_after_update(client):
+async def test_get_submenu_after_update(client: AsyncClient) -> None:
     response = await client.get(
         url_for('get_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
     )
 
     assert response.status_code == 200
-    assert response.json()['title'] == submenu_patch_data_json['title']
-    assert response.json()['description'] == submenu_patch_data_json['description']
+    assert response.json()['title'] == SUBMENU_PATCH_DATA_JSON['title']
+    assert response.json()['description'] == SUBMENU_PATCH_DATA_JSON['description']
 
 
 @pytest.mark.asyncio
-async def test_delete_submenu(client):
+async def test_delete_submenu(client: AsyncClient) -> None:
     response = await client.delete(
         url_for('delete_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
     )
@@ -106,7 +94,7 @@ async def test_delete_submenu(client):
 
 
 @pytest.mark.asyncio
-async def test_list_submenu_is_empty_after_delete(client):
+async def test_list_submenu_is_empty_after_delete(client: AsyncClient) -> None:
     response = await client.get(
         url_for('list_submenu', menu_id=target_menu_id),
     )
@@ -116,7 +104,7 @@ async def test_list_submenu_is_empty_after_delete(client):
 
 
 @pytest.mark.asyncio
-async def test_get_submenu_not_found(client):
+async def test_get_submenu_not_found(client: AsyncClient) -> None:
     response = await client.get(
         url_for('get_submenu', menu_id=target_menu_id, submenu_id=target_submenu_id),
     )

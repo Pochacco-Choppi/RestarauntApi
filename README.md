@@ -24,3 +24,7 @@ To stop RestarauntAPI, run `docker-compose down`. This will stop and remove the 
 # Postman tests result
 
 ![Alt text](images/postman_tests_result.png)
+
+# Additional tasks
+1. Реализовать вывод количества подменю и блюд для Меню через один (сложный) ORM запрос. (src/menus/repositories.py & src/submneus/repositories.py (get method))
+2. Реализовать в тестах аналог Django reverse() для FastAPI (src/main.py (url_for method))

@@ -1,5 +1,4 @@
 import contextlib
-import os
 from typing import AsyncIterator
 
 from redis import asyncio as aioredis
@@ -13,17 +12,12 @@ from sqlalchemy.ext.asyncio import (
 )
 from sqlalchemy.orm import DeclarativeBase
 
-db_user = os.environ['DATABASE_USER']
-db_password = os.environ['DATABASE_PASSWORD']
-db_host = os.environ['DATABASE_HOST']
-db_port = os.environ['DATABASE_PORT']
+from src.config import DB_HOST, DB_PASSWORD, DB_PORT, DB_USER, REDIS_HOST
 
-redis_host = os.environ['REDIS_HOST']
-
-redis = aioredis.from_url(f'redis://{redis_host}')
+redis = aioredis.from_url(f'redis://{REDIS_HOST}')
 
 SQLALCHEMY_DATABASE_URL = (
-    f'postgresql+asyncpg://{db_user}:{db_password}@{db_host}:{db_port}'
+    f'postgresql+asyncpg://{DB_USER}:{DB_PASSWORD}@{DB_HOST}:{DB_PORT}'
 )
 
 engine = create_async_engine(
