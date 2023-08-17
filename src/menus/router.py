@@ -33,7 +33,7 @@ async def list_menu_with_related(menu: MenuService = Depends()) -> JSONResponse:
     status_code=status.HTTP_200_OK,
 )
 async def list_menu(menu: MenuService = Depends()) -> JSONResponse:
-    menus_list = await menu.list_related()
+    menus_list = await menu.list()
     return jsonable_encoder(
         [schemas.MenuBase(
             # id=m.id,
