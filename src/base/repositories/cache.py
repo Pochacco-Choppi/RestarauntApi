@@ -34,7 +34,7 @@ class BaseRedisCacheRepository(AbstractRedisCacheRepository):
 
         return None
 
-    async def set(self, key, data, ex=604800) -> None:
+    async def set(self, key, data, ex=15) -> None:
         await self.redis.set(key, data, ex=ex)
 
     async def delete(self, *keys) -> None:
